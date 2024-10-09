@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:todo_app/view/screen/auth/login/login_screen.dart';
 import 'package:todo_app/view/screen/home/home_screen.dart';
 
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -21,10 +22,10 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const LoginScreen(),
+      home:  LoginScreen(),
       getPages: [
-        GetPage(name: '/', page: () => const LoginScreen()),
-        GetPage(name: '/home', page: () => const HomeScreen()),
+        GetPage(name: '/', page: () =>  LoginScreen()),
+        GetPage(name: '/home', page: () =>  HomeScreen()),
       ],
     );
   }
