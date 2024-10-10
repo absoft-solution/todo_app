@@ -9,6 +9,8 @@ class LoginScreen extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
+  LoginScreen({super.key});
+
   void _login() async {
     final email = emailController.text;
     final password = passwordController.text;
@@ -20,7 +22,6 @@ class LoginScreen extends StatelessWidget {
           snackPosition: SnackPosition.BOTTOM);
     }
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
