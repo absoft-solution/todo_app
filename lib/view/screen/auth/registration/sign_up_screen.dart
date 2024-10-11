@@ -1,8 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:todo_app/view/screen/auth/login/login_screen.dart';
 
 import '../../../../services/auth_services.dart';
-
 
 class SignUpScreen extends StatelessWidget {
   final AuthService authService = Get.put(AuthService());
@@ -12,9 +13,12 @@ class SignUpScreen extends StatelessWidget {
   void _signUp() async {
     final email = emailController.text;
     final password = passwordController.text;
-    await authService.signUp(email, password);
-    if (authService.signUp(email, password) != null) {
-      Get.offNamed('/home');
+    User? user = await authService.signUp(email, password);
+
+    if (user != null) {
+      Get.snackbar('Verification Email Sent',
+          'Please check your email to verify your account.');
+      Get.to(() => LoginScreen());
     }
   }
 

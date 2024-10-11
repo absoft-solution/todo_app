@@ -17,8 +17,12 @@ class AuthService extends GetxService {
 
   Future<User?> signUp(String email, String password) async {
     try {
-      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
-          email: email, password: password);
+      UserCredential userCredential = await _auth
+          .createUserWithEmailAndPassword(email: email, password: password);
+
+      await userCredential.user
+          ?.sendEmailVerification(); //sedning verification email
+
       return userCredential.user;
     } catch (e) {
       Get.snackbar('Sign Up Error', e.toString());

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -17,6 +18,7 @@ final TextEditingController _titleController = TextEditingController();
 class _HomeScreenState extends State<HomeScreen> {
   final AuthService authService = Get.put(AuthService());
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  User? user = FirebaseAuth.instance.currentUser;
 
   void _signOut() async {
     await authService.signOut();
@@ -107,35 +109,53 @@ class _HomeScreenState extends State<HomeScreen> {
         },
         child: const Icon(Icons.add, size: 32),
       ),
-      body: StreamBuilder(
-          stream: firestore.collection('TodoList').snapshots(),
-          builder:
-              (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-            if (snapshot.hasError) {
-              return const Text('Unknown Error: Something went wrong');
-            }
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            }
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              user?.emailVerified == true
+                  ? 'Your email is verified'
+                  : 'Your email is not verified',
+              style: TextStyle(
+                color: user?.emailVerified == true ? Colors.green : Colors.red,
+                fontSize: 18,
+              ),
+            ),
+          ),
+          Expanded(
+            child: StreamBuilder(
+                stream: firestore.collection('TodoList').snapshots(),
+                builder: (BuildContext context,
+                    AsyncSnapshot<QuerySnapshot> snapshot) {
+                  if (snapshot.hasError) {
+                    return const Text('Unknown Error: Something went wrong');
+                  }
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
 
-            final notes = snapshot.data?.docs;
-            if (notes == null || notes.isEmpty) {
-              return const Center(child: Text('No notes available'));
-            }
-            return ListView.builder(
-              itemCount: notes.length,
-              itemBuilder: (context, index) {
-                var note = notes[index];
-                return Card(
-                  color: Colors.cyan,
-                  child: ListTile(
-                    title: Text(note['Title']),
-                    subtitle: Text(note['Post']),
-                  ),
-                );
-              },
-            );
-          }),
+                  final notes = snapshot.data?.docs;
+                  if (notes == null || notes.isEmpty) {
+                    return const Center(child: Text('No notes available'));
+                  }
+                  return ListView.builder(
+                    itemCount: notes.length,
+                    itemBuilder: (context, index) {
+                      var note = notes[index];
+                      return Card(
+                        color: Colors.cyan,
+                        child: ListTile(
+                          title: Text(note['Title']),
+                          subtitle: Text(note['Post']),
+                        ),
+                      );
+                    },
+                  );
+                }),
+          ),
+        ],
+      ),
     );
   }
 }

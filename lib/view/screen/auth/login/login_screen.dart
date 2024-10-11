@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:todo_app/view/screen/auth/registration/verification_screen.dart';
 import '../../../../services/auth_services.dart';
 import '../registration/sign_up_screen.dart';
 
@@ -15,13 +16,25 @@ class LoginScreen extends StatelessWidget {
     final email = emailController.text;
     final password = passwordController.text;
     User? user = await authService.signIn(email, password);
+
     if (user != null) {
-      Get.offNamed('/home');
+      await user.reload(); //reload data abut verified users
+      user = FirebaseAuth.instance.currentUser;
+
+      if (user?.emailVerified == true) //if verified go to home
+      {
+        Get.offNamed('/home');
+      } else {
+        Get.snackbar('Email Not Verified',
+            'Please verify your email before logging in.');
+        Get.to(() => VerificationScreen());
+      }
     } else {
       Get.snackbar('Login Error', 'Invalid email or password.',
           snackPosition: SnackPosition.BOTTOM);
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
