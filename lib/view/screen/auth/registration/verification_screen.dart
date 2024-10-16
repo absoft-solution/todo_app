@@ -1,11 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
+import 'package:todo_app/view/screen/auth/login/login_screen.dart';
 import '../../../../services/auth_services.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class VerificationScreen extends StatelessWidget {
   final AuthService authService = Get.put(AuthService());
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   void _resendVerification() async {
     User? user = FirebaseAuth.instance.currentUser;
@@ -36,7 +38,7 @@ class VerificationScreen extends StatelessWidget {
             ),
             TextButton(
               onPressed: () {
-                Get.offNamed('/login');
+                Get.to(() => LoginScreen());
               },
               child: const Text("Already verified? Login"),
             ),
